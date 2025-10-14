@@ -1,4 +1,4 @@
-const LINE_LENGTH = 20;
+const LINE_LENGTH = 80;
 
 /**
  * Justifie un texte brut pour que chaque ligne fasse exactement LINE_LENGTH caractères,

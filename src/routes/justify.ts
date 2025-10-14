@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
 import { justifyText } from "../utils/justifyText";
+import { authMiddleware } from "../middlewares/auth";
 
 const router = express.Router();
 
-router.post("/", express.text(), (req: Request, res: Response) => {
+router.post("/", authMiddleware, express.text(), (req: Request, res: Response) => {
     const text = req.body;
 
     if (typeof text !== "string" || text.trim().length === 0) {
