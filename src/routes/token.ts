@@ -1,12 +1,13 @@
 import express, { Request, Response } from "express";
 import { addToken } from "../middlewares/auth";
+import { Token } from "../models/Token";
 
 const router = express.Router();
 
 /**
  * POST /api/token
  * Body: { "email": "foo@bar.com" }
- * Retourne un token unique pour l'utilisateur.
+ * Retourne le token existant ou en crée un nouveau.
  */
 router.post("/", async (req: Request, res: Response) => {
     try {
@@ -25,7 +26,17 @@ router.post("/", async (req: Request, res: Response) => {
             return res.status(400).json({ error: "Format d'email invalide." });
         }
 
-        // Génère et sauvegarde le token
+        // Vérifie s'il existe déjà un token valide pour cet email
+        const existingToken = await Token.findOne({
+            email,
+            expiresAt: { $gt: new Date() }
+        });
+
+        if (existingToken) {
+            return res.json({ token: existingToken.token });
+        }
+
+        // Sinon, génère et sauvegarde un nouveau token
         const token = await addToken(email);
         res.json({ token });
     } catch (err) {
