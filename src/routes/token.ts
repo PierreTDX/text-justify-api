@@ -46,3 +46,43 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+/**
+ * @swagger
+ * tags:
+ *   name: Token
+ *   description: Gestion des tokens
+ */
+
+/**
+ * @swagger
+ * /api/token:
+ *   post:
+ *     tags: [Token]
+ *     summary: Génère un token pour un email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: foo@bar.com
+ *     responses:
+ *       200:
+ *         description: Token généré avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: a3f1b2c4d5e6f7...
+ *       400:
+ *         description: Email invalide ou manquant
+ */
