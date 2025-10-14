@@ -28,9 +28,9 @@ const options: swaggerJSDoc.Options = {
     apis: ["./src/routes/*.ts"]
 };
 
-
 const swaggerSpec = swaggerJSDoc(options);
 
 export const setupSwagger = (app: Express) => {
+    // On ne passe que swaggerSpec et options valides
     app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };
