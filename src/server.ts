@@ -1,39 +1,32 @@
 import express from "express";
-import mongoose from "mongoose";
+import dotenv from "dotenv";
 import tokenRouter from "./routes/token";
 import justifyRouter from "./routes/justify";
-import dotenv from "dotenv";
 import { setupSwagger } from "./swagger";
+import { connectDB } from "../db";
 
 dotenv.config();
 
-const app = express();
+const start = async () => {
+    await connectDB(); // on se connecte via db.ts
 
-// Connexion MongoDB
-const connectDB = async () => {
-    try {
-        const mongoUri = process.env.MONGODB_URI;
-        if (!mongoUri) {
-            throw new Error("MONGODB_URI non défini");
-        }
+    const app = express();
 
-        await mongoose.connect(mongoUri);
-        console.log("Connecté à MongoDB");
-    } catch (err) {
-        console.error("Erreur connexion MongoDB :", err);
-        process.exit(1);
-    }
-};
+    // Middleware
+    app.use(express.json());
+    app.use(express.text());
 
-connectDB();
+    // Routes
+    app.use("/api/token", tokenRouter);
+    app.use("/api/justify", justifyRouter);
 
-// Middleware
-app.use(express.json());
-app.use(express.text()); // pour parser text/plain dans /api/justify
+    // Swagger
+    // route /api/docs
+    setupSwagger(app);
 
-// page d'accueil
-app.get("/", (req, res) => {
-    res.send(`
+    // page d'accueil
+    app.get("/", (req, res) => {
+        res.send(`
         <html>
             <head>
                 <title>Text Justify API</title>
@@ -49,7 +42,7 @@ app.get("/", (req, res) => {
                 <p>Cette API permet de justifier du texte via l'endpoint <code>/api/justify</code>.</p>
                 <p>Avant de l'utiliser, récupérez un token avec <code>/api/token</code>.</p>
                 <p>Consultez la documentation Swagger pour tester les endpoints :</p>
-                <p><a href="/api/docs" target="_blank">📚 Documentation Swagger</a></p>
+                <p><a href="/api/docs">📚 Documentation Swagger</a></p>
                 <p>Exemple d'utilisation :</p>
                 <ul>
                     <li>POST /api/token avec un JSON { "email": "foo@bar.com" }</li>
@@ -58,19 +51,13 @@ app.get("/", (req, res) => {
             </body>
         </html>
     `);
-});
+    });
 
-// Routes
-app.use("/api/token", tokenRouter);
-app.use("/api/justify", justifyRouter);
+    // Lancement serveur
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Serveur local lancé sur http://localhost:${PORT}`);
+    });
+};
 
-// Swagger
-// route /api/docs
-setupSwagger(app);
-
-// Lancement serveur
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Serveur lancé sur le port ${PORT}`);
-    console.log(`Swagger UI disponible sur http://localhost:${PORT}/api/docs`);
-});
+start();

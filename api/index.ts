@@ -1,31 +1,29 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import express from "express";
-import mongoose from "mongoose";
+import { setupSwagger } from "../src/swagger";
+import tokenRouter from "../src/routes/token";
+import justifyRouter from "../src/routes/justify";
 import dotenv from "dotenv";
-import tokenRouter from "../routes/token";
-import justifyRouter from "../routes/justify";
-import { setupSwagger } from "../swagger";
+import { connectDB } from "../db";
 
 dotenv.config();
-const app = express();
 
-// Middleware
-app.use(express.json());
-app.use(express.text());
+const appPromise = (async () => {
+  await connectDB();
 
-// MongoDB
-mongoose.connect(process.env.MONGODB_URI || "").catch(console.error);
+  const app = express();
+  app.use(express.json());
+  app.use(express.text());
 
-// Routes
-app.use("/api/token", tokenRouter);
-app.use("/api/justify", justifyRouter);
+  // Routes API
+  app.use("/api/token", tokenRouter);
+  app.use("/api/justify", justifyRouter);
+  // Swagger
+  setupSwagger(app);
 
-// Swagger
-setupSwagger(app);
-
-// Page d'accueil
-app.get("/", (req, res) => {
-  res.send(`
+  // Page d'accueil
+  app.get("/", (req, res) => {
+    res.send(`
     <html>
       <head>
         <title>Text Justify API</title>
@@ -41,7 +39,7 @@ app.get("/", (req, res) => {
         <p>Cette API permet de justifier du texte via l'endpoint <code>/api/justify</code>.</p>
         <p>Avant de l'utiliser, récupérez un token avec <code>/api/token</code>.</p>
         <p>Consultez la documentation Swagger pour tester les endpoints :</p>
-        <p><a href="/api/docs" target="_blank">📚 Documentation Swagger</a></p>
+        <p><a href="/api/docs">📚 Documentation Swagger</a></p>
         <p>Exemple d'utilisation :</p>
         <ul>
           <li>POST /api/token avec un JSON { "email": "foo@bar.com" }</li>
@@ -50,9 +48,13 @@ app.get("/", (req, res) => {
       </body>
     </html>
   `);
-});
+  });
+
+  return app;
+})();
 
 // Export pour Vercel
-export default (req: VercelRequest, res: VercelResponse) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
+  const app = await appPromise;
   app(req as any, res as any);
 };
