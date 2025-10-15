@@ -1,32 +1,39 @@
 import express from "express";
-import dotenv from "dotenv";
+import mongoose from "mongoose";
 import tokenRouter from "./routes/token";
 import justifyRouter from "./routes/justify";
+import dotenv from "dotenv";
 import { setupSwagger } from "./swagger";
-import { connectDB } from "../db";
 
 dotenv.config();
 
-const start = async () => {
-    await connectDB(); // on se connecte via db.ts
+const app = express();
 
-    const app = express();
+// Connexion MongoDB
+const connectDB = async () => {
+    try {
+        const mongoUri = process.env.MONGODB_URI;
+        if (!mongoUri) {
+            throw new Error("MONGODB_URI non défini");
+        }
 
-    // Middleware
-    app.use(express.json());
-    app.use(express.text());
+        await mongoose.connect(mongoUri);
+        console.log("Connecté à MongoDB");
+    } catch (err) {
+        console.error("Erreur connexion MongoDB :", err);
+        process.exit(1);
+    }
+};
 
-    // Routes
-    app.use("/api/token", tokenRouter);
-    app.use("/api/justify", justifyRouter);
+connectDB();
 
-    // Swagger
-    // route /api/docs
-    setupSwagger(app);
+// Middleware
+app.use(express.json());
+app.use(express.text()); // pour parser text/plain dans /api/justify
 
-    // page d'accueil
-    app.get("/", (req, res) => {
-        res.send(`
+// page d'accueil
+app.get("/", (req, res) => {
+    res.send(`
         <html>
             <head>
                 <title>Text Justify API</title>
@@ -51,13 +58,19 @@ const start = async () => {
             </body>
         </html>
     `);
-    });
+});
 
-    // Lancement serveur
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Serveur local lancé sur http://localhost:${PORT}`);
-    });
-};
+// Routes
+app.use("/api/token", tokenRouter);
+app.use("/api/justify", justifyRouter);
 
-start();
+// Swagger
+// route /api/docs
+setupSwagger(app);
+
+// Lancement serveur
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Serveur lancé sur le port ${PORT}`);
+    console.log(`Swagger UI disponible sur http://localhost:${PORT}/api/docs`);
+});
