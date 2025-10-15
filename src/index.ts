@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import tokenRouter from "./routes/token";
 import justifyRouter from "./routes/justify";
 import dotenv from "dotenv";
-import { setupSwagger } from "./swagger"; // <-- notre fichier swagger.ts
+import { setupSwagger } from "./swagger";
 
 dotenv.config();
 
