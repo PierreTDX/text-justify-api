@@ -186,8 +186,6 @@ L'API est déployée sur **Render**.
 
 ### Variables d'environnement requises
 - `MONGODB_URI` : URI de connexion MongoDB
-- `PORT` : Port du serveur (optionnel, par défaut 3000)
-- `NODE_ENV` : `production`
 
 ---
 
@@ -204,7 +202,10 @@ L'API est déployée sur **Render**.
 
 ## Documentation API
 
-La documentation Swagger est disponible à l'endpoint `/api-docs` une fois l'API lancée.
+La documentation Swagger est disponible à l'endpoint `/api/docs/` une fois l'API lancée.
+
+**Lien public** : [https://text-justify-api-ptdx.onrender.com/api/docs/](https://text-justify-api-ptdx.onrender.com/api/docs/)
+
 
 ---
 
