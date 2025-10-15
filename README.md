@@ -39,7 +39,7 @@ src/
 │
 ├── middlewares/
 │   ├── auth.ts              # Vérification / Création du token
-│   └── rateLimit.ts         # Gestion du quota journalier
+│   └── rateLimit.ts         # Gestion du quota journalier DAILY_LIMIT = 80000
 │
 ├── models/
 │   ├── RateLimit.ts         # Modèle de rate limit
@@ -50,7 +50,7 @@ src/
 │   └── token.ts             # Endpoint /api/token
 │
 ├── utils/
-│   └── justifyText.ts       # Fonction de justification (sans lib externe)
+│   └── justifyText.ts       # Fonction de justification (sans lib externe) LINE_LENGTH = 80
 │
 ├── index.ts                # Point d'entrée principal
 └── swagger.ts              # Définition Swagger (API docs)
