@@ -1,7 +1,7 @@
 import request from 'supertest';
 import express from 'express';
-import { Token } from '../src/models/Token';
-import tokenRouter from '../src/routes/token';
+import { Token } from '../models/Token';
+import tokenRouter from '../routes/token';
 
 const app = express();
 app.use(express.json());

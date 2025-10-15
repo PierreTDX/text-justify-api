@@ -10,5 +10,5 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   testMatch: ['**/*.test.ts'], // seuls les fichiers *.test.ts seront exécutés
-  setupFilesAfterEnv: ['<rootDir>/__tests__/setup.ts'], // ton setup
+  setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'], // ton setup
 };
