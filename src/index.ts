@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
                 <p>Cette API permet de justifier du texte via l'endpoint <code>/api/justify</code>.</p>
                 <p>Avant de l'utiliser, récupérez un token avec <code>/api/token</code>.</p>
                 <p>Consultez la documentation Swagger pour tester les endpoints :</p>
-                <p><a href="/api/docs" target="_blank">📚 Documentation Swagger</a></p>
+                <p><a href="/api/docs">📚 Documentation Swagger</a></p>
                 <p>Exemple d'utilisation :</p>
                 <ul>
                     <li>POST /api/token avec un JSON { "email": "foo@bar.com" }</li>

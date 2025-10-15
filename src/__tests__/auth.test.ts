@@ -1,5 +1,5 @@
-import { authMiddleware, addToken } from '../src/middlewares/auth';
-import { Token } from '../src/models/Token';
+import { authMiddleware, addToken } from '../middlewares/auth';
+import { Token } from '../models/Token';
 import { Request, Response, NextFunction } from 'express';
 
 describe('Auth Middleware', () => {
